@@ -121,6 +121,18 @@ const keys = {
   },
 }
 
+const backgroundMusic = new Audio('./audio/stage.mp3')
+backgroundMusic.loop = true
+
+const attackSound = new Audio('./audio/ataque1.mp3')
+
+document.getElementById('startButton').addEventListener('click', () => {
+  document.getElementById('startButton').style.display = 'none'
+  canvas.style.display = 'block'
+  backgroundMusic.play()
+  animate()
+})
+
 const background = new Sprite({
   position: {
     x: 0,
@@ -182,8 +194,6 @@ function animate() {
   c.restore()
 }
 
-animate()
-
 window.addEventListener('keydown', (event) => {
   switch (event.key) {
     case 'd':
@@ -199,6 +209,8 @@ window.addEventListener('keydown', (event) => {
       break
     case 'j':
       player.switchSprite('Attack')
+      attackSound.currentTime = 0
+      attackSound.play()
       break
   }
 })
@@ -213,4 +225,3 @@ window.addEventListener('keyup', (event) => {
       break
   }
 })
-
