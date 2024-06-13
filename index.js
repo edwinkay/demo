@@ -123,8 +123,10 @@ const keys = {
 
 const backgroundMusic = new Audio('./audio/stage.mp3')
 backgroundMusic.loop = true
+backgroundMusic.volume = 0.2 
 
 const attackSound = new Audio('./audio/ataque1.mp3')
+const jump = new Audio('./audio/salto.mp3')
 
 document.getElementById('startButton').addEventListener('click', () => {
   document.getElementById('startButton').style.display = 'none'
@@ -205,6 +207,8 @@ window.addEventListener('keydown', (event) => {
     case 'w':
       if (player.velocity.y === 0) { // Solo permitir saltar si el jugador está en el suelo
         player.velocity.y = -4
+        jump.currentTime = 0
+        jump.play()
       }
       break
     case 'j':
