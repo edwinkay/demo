@@ -1,54 +1,35 @@
 class Player extends Sprite {
-  constructor({
-    position,
-    collisionBlocks,
-    platformCollisionBlocks,
-    imageSrc,
-    frameRate,
-    scale = 0.5,
-    animations,
-  }) {
+  constructor({ position, collisionBlocks, platformCollisionBlocks, imageSrc, frameRate, scale = 0.5, animations }) {
     super({ imageSrc, frameRate, scale })
     this.position = position
-    this.velocity = {
-      x: 0,
-      y: 1,
-    }
-
+    this.velocity = { x: 0, y: 1 }
     this.collisionBlocks = collisionBlocks
     this.platformCollisionBlocks = platformCollisionBlocks
-    this.hitbox = {
-      position: {
-        x: this.position.x,
-        y: this.position.y,
-      },
-      width: 10,
-      height: 10,
-    }
-
+    this.hitbox = { position: { x: this.position.x, y: this.position.y }, width: 10, height: 10 }
     this.animations = animations
     this.lastDirection = 'right'
-    this.isOnGround = false
+    this.attacking = false
 
     for (let key in this.animations) {
       const image = new Image()
       image.src = this.animations[key].imageSrc
-
       this.animations[key].image = image
+      image.onload = () => {
+        console.log(`${key} image loaded: ${image.src}`);
+      }
     }
 
-    this.camerabox = {
-      position: {
-        x: this.position.x,
-        y: this.position.y,
-      },
-      width: 200,
-      height: 80,
-    }
+    this.camerabox = { position: { x: this.position.x, y: this.position.y }, width: 200, height: 80 }
   }
 
   switchSprite(key) {
+    if (this.attacking && key !== 'Idle' && key !== 'IdleLeft') return
     if (this.image === this.animations[key].image || !this.loaded) return
+
+    if (key === 'Attack') {
+      this.attacking = true
+      setTimeout(() => { this.attacking = false }, this.animations[key].frameRate * this.animations[key].frameBuffer * 1000 / 60) // Ajusta según sea necesario
+    }
 
     this.currentFrame = 0
     this.image = this.animations[key].image

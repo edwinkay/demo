@@ -104,6 +104,11 @@ const player = new Player({
       frameRate: 2,
       frameBuffer: 3,
     },
+    Attack: {
+      imageSrc: './img/warrior/Attack1.png',
+      frameRate: 4,
+      frameBuffer: 4,
+    },
   },
 })
 
@@ -142,31 +147,26 @@ function animate() {
   c.scale(4, 4)
   c.translate(camera.position.x, camera.position.y)
   background.update()
-  // collisionBlocks.forEach((collisionBlock) => {
-  //   collisionBlock.update()
-  // })
-
-  // platformCollisionBlocks.forEach((block) => {
-  //   block.update()
-  // })
 
   player.checkForHorizontalCanvasCollision()
   player.update()
 
   player.velocity.x = 0
-  if (keys.d.pressed) {
-    player.switchSprite('Run')
-    player.velocity.x = 2
-    player.lastDirection = 'right'
-    player.shouldPanCameraToTheLeft({ canvas, camera })
-  } else if (keys.a.pressed) {
-    player.switchSprite('RunLeft')
-    player.velocity.x = -2
-    player.lastDirection = 'left'
-    player.shouldPanCameraToTheRight({ canvas, camera })
-  } else if (player.velocity.y === 0) {
-    if (player.lastDirection === 'right') player.switchSprite('Idle')
-    else player.switchSprite('IdleLeft')
+  if (!player.attacking) {
+    if (keys.d.pressed) {
+      player.switchSprite('Run')
+      player.velocity.x = 2
+      player.lastDirection = 'right'
+      player.shouldPanCameraToTheLeft({ canvas, camera })
+    } else if (keys.a.pressed) {
+      player.switchSprite('RunLeft')
+      player.velocity.x = -2
+      player.lastDirection = 'left'
+      player.shouldPanCameraToTheRight({ canvas, camera })
+    } else if (player.velocity.y === 0) {
+      if (player.lastDirection === 'right') player.switchSprite('Idle')
+      else player.switchSprite('IdleLeft')
+    }
   }
 
   if (player.velocity.y < 0) {
@@ -193,10 +193,12 @@ window.addEventListener('keydown', (event) => {
       keys.a.pressed = true
       break
     case 'w':
-      if (player.isOnGround) {
+      if (player.velocity.y === 0) { // Solo permitir saltar si el jugador está en el suelo
         player.velocity.y = -4
-        player.isOnGround = false
       }
+      break
+    case 'j':
+      player.switchSprite('Attack')
       break
   }
 })
