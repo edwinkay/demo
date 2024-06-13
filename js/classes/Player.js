@@ -28,6 +28,7 @@ class Player extends Sprite {
 
     this.animations = animations
     this.lastDirection = 'right'
+    this.isOnGround = false
 
     for (let key in this.animations) {
       const image = new Image()
@@ -127,25 +128,6 @@ class Player extends Sprite {
     this.updateHitbox()
 
     this.updateCamerabox()
-    // c.fillStyle = 'rgba(0, 0, 255, 0.2)'
-    // c.fillRect(
-    //   this.camerabox.position.x,
-    //   this.camerabox.position.y,
-    //   this.camerabox.width,
-    //   this.camerabox.height
-    // )
-
-    // draws out the image
-    // c.fillStyle = 'rgba(0, 255, 0, 0.2)'
-    // c.fillRect(this.position.x, this.position.y, this.width, this.height)
-
-    // c.fillStyle = 'rgba(255, 0, 0, 0.2)'
-    // c.fillRect(
-    //   this.hitbox.position.x,
-    //   this.hitbox.position.y,
-    //   this.hitbox.width,
-    //   this.hitbox.height
-    // )
 
     this.draw()
 
@@ -207,15 +189,14 @@ class Player extends Sprite {
   }
 
   checkForVerticalCollisions() {
+    this.isOnGround = false
     for (let i = 0; i < this.collisionBlocks.length; i++) {
       const collisionBlock = this.collisionBlocks[i]
 
-      if (
-        collision({
-          object1: this.hitbox,
-          object2: collisionBlock,
-        })
-      ) {
+      if (collision({
+        object1: this.hitbox,
+        object2: collisionBlock,
+      })) {
         if (this.velocity.y > 0) {
           this.velocity.y = 0
 
@@ -223,6 +204,7 @@ class Player extends Sprite {
             this.hitbox.position.y - this.position.y + this.hitbox.height
 
           this.position.y = collisionBlock.position.y - offset - 0.01
+          this.isOnGround = true
           break
         }
 
@@ -242,12 +224,10 @@ class Player extends Sprite {
     for (let i = 0; i < this.platformCollisionBlocks.length; i++) {
       const platformCollisionBlock = this.platformCollisionBlocks[i]
 
-      if (
-        platformCollision({
-          object1: this.hitbox,
-          object2: platformCollisionBlock,
-        })
-      ) {
+      if (platformCollision({
+        object1: this.hitbox,
+        object2: platformCollisionBlock,
+      })) {
         if (this.velocity.y > 0) {
           this.velocity.y = 0
 
@@ -255,6 +235,7 @@ class Player extends Sprite {
             this.hitbox.position.y - this.position.y + this.hitbox.height
 
           this.position.y = platformCollisionBlock.position.y - offset - 0.01
+          this.isOnGround = true
           break
         }
       }

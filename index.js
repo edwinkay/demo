@@ -193,7 +193,10 @@ window.addEventListener('keydown', (event) => {
       keys.a.pressed = true
       break
     case 'w':
-      player.velocity.y = -4
+      if (player.isOnGround) {
+        player.velocity.y = -4
+        player.isOnGround = false
+      }
       break
   }
 })
@@ -208,3 +211,4 @@ window.addEventListener('keyup', (event) => {
       break
   }
 })
+
